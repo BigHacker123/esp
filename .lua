@@ -1,11 +1,14 @@
 local plrs = game["Players"]
 local rs = game["RunService"]
+
 local plr = plrs.LocalPlayer
 local mouse = plr:GetMouse()
 local camera = workspace.CurrentCamera
 local worldToViewportPoint = camera.worldToViewportPoint
 local emptyCFrame = CFrame.new();
 local pointToObjectSpace = emptyCFrame.PointToObjectSpace
+
+-- thank you demo for the optim variables saved me so much time
 
 local Drawingnew = Drawing.new
 local Color3fromRGB = Color3.fromRGB
@@ -102,7 +105,11 @@ esp.TeamCheck = function(v)
 end
 
 esp.GetEquippedTool = function(v)
-    return (v.Character:FindFirstChildOfClass("Tool") and tostring(v.Character:FindFirstChildOfClass("Tool"))) or "Hands"
+    local Character =  v.Parent == game.Players and v.Character or v
+    if Character:FindFirstChildOfClass("Tool") then
+        return tostring(Character:FindFirstChildOfClass("Tool"))
+    end
+    return "None"
 end
 
 esp.NewPlayer = function(v)
@@ -390,6 +397,59 @@ esp_Loop = rs.RenderStepped:Connect(function()
             v.arrow.Visible = false
         end
     end
+
+    local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
+    for _,Folders in pairs(game.Workspace.AiZones:GetChildren()) do
+        for _,Bot in pairs(Folders:GetChildren()) do
+            if Bot and esp.customsettings.enabled and Bot:FindFirstChild("HumanoidRootPart") and (hrp.Position - Bot.HumanoidRootPart.Position).Magnitude <= esp.customsettings.maxdist and Bot.Humanoid.Health >= 1 then
+
+                if esp.customsettings.names.enabled then
+                    if Bot:FindFirstChild("ESP") then
+                        Bot.ESP.StudsOffset = Vector3.new(0,3.5,0)
+                        Bot.ESP.Frame.TextLabel.TextColor3 = esp.customsettings.names.color
+                        Bot.ESP.Frame.TextLabel.BorderColor3 = Color3.new(1,1,1)
+                        Bot.ESP.Frame.TextLabel.TextSize = esp.customsettings.names.size
+                        Bot.ESP.Frame.TextLabel.Font = 3
+                        if not esp.customsettings.distance.enabled then
+                            Bot.ESP.Frame.TextLabel.Text = Bot.Name
+                        elseif esp.customsettings.distance.enabled then
+                            Bot.ESP.Frame.TextLabel.Text = Bot.Name .. " [ " .. math.floor((hrp.Position - Bot.HumanoidRootPart.Position).Magnitude) .. " ]"
+                        end
+                        if esp.customsettings.names.outline then
+                            Bot.ESP.Frame.TextLabel.BorderSizePixel = 10
+                        else
+                            Bot.ESP.Frame.TextLabel.BorderSizePixel = 1
+                        end
+                    else
+                        CreateNameTag(Bot, "Bot")
+                    end
+                else
+                    if Bot:FindFirstChild("ESP") then
+                        Bot.ESP:Destroy()
+                    end
+                end
+
+                if esp.customsettings.chams.enabled then
+                    if not Bot:FindFirstChild("Chams") then
+                        CreateHighlight(Bot)
+                    elseif Bot:FindFirstChild("Chams") then
+                        Bot.Chams:Destroy()
+                        CreateHighlight(Bot)
+                    end
+                else
+                    if Bot:FindFirstChild("Chams") then
+                        Bot.Chams:Destroy()
+                    end
+                end
+            else
+                if Bot:FindFirstChild("ESP") then
+                    Bot.ESP:Destroy()
+                end
+            end
+        end
+    end
+end)
 
 local function DrawLine()
     local l = Drawing.new("Line")
