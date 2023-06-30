@@ -34,7 +34,7 @@ local esp = {
         healthtext = {enabled = false, outline = true, color = Color3fromRGB(255, 255, 255)},
         distance = {enabled = false, outline = true, color = Color3fromRGB(255, 255, 255)},
         viewangle = {enabled = false, size = 6, color = Color3fromRGB(255, 255, 255)},
-        weapon = {enabled = false, outline = true, color = Color3fromRGB(255, 255, 255)},
+        weapon = {enabled = false, size = 6, color = Color3fromRGB(255, 255, 255)},
         skeleton = {enabled = false, color = Color3fromRGB(255, 255, 255)},
         tracer = {enabled = false, origin = "Middle", color = Color3fromRGB(255, 255, 255)},
         arrow = {enabled = false, radius = 100, size = 25, filled = false, transparency = 1, color = Color3fromRGB(255, 255, 255)}
@@ -52,27 +52,31 @@ local esp = {
         invisible_Color = Color3fromRGB(255, 0, 0),
     },
     customsettings = {
-        enabled = false,
+        enabled = true,
         maxdist = 4000,
-        names = {enabled = false, outline = true, size = 13, color = Color3fromRGB(255, 255, 255)},
-        distance = {enabled = false, outline = true, color = Color3fromRGB(255, 255, 255)},
-        chams = {enabled = false, fill_transparency = 0, outline_transparency = 0, fill_color = Color3fromRGB(255, 255, 255), outline_color = Color3fromRGB(0, 0, 0)}
+        names = {enabled = true, outline = true, size = 13, color = Color3fromRGB(255, 255, 255)},
+        distance = {enabled = true, outline = true, color = Color3fromRGB(255, 255, 255)},
+        chams = {enabled = true, fill_transparency = 0, outline_transparency = 0, fill_color = Color3fromRGB(255, 255, 255), outline_color = Color3fromRGB(0, 0, 0)}
     }
 }
 
 esp.NewDrawing = function(type, properties)
     local newDrawing = Drawingnew(type)
+
     for i,v in next, properties or {} do
         newDrawing[i] = v
     end
+
     return newDrawing
 end
 
 esp.NewCham = function(properties)
     local newCham = Instance.new("Highlight", game.CoreGui)
+
     for i,v in next, properties or {} do
         newCham[i] = v
     end
+
     return newCham
 end
 
@@ -97,6 +101,7 @@ esp.TeamCheck = function(v)
     if plr.TeamColor == v.TeamColor then
         return false
     end
+
     return true
 end
 
@@ -141,13 +146,13 @@ end
 
 function CreateHighlight(Model)
     local Highlight = Instance.new("Highlight")
-    Highlight.Name = "Chams"
-	Highlight.Parent = Model
-	Highlight.OutlineColor = esp.customsettings.chams.outline_color
-	Highlight.FillColor = esp.customsettings.chams.fill_color
-	Highlight.Enabled = true
-	Highlight.FillTransparency = esp.customsettings.chams.fill_transparency
-	Highlight.OutlineTransparency = esp.customsettings.chams.outline_transparency
+        Highlight.Name = "Chams"
+		Highlight.Parent = Model
+		Highlight.OutlineColor = esp.customsettings.chams.outline_color
+		Highlight.FillColor = esp.customsettings.chams.fill_color
+		Highlight.Enabled = true
+		Highlight.FillTransparency = esp.customsettings.chams.fill_transparency
+		Highlight.OutlineTransparency = esp.customsettings.chams.outline_transparency
 end
 
 local esp_Loop
@@ -157,10 +162,13 @@ esp_Loop = rs.RenderStepped:Connect(function()
             local hum = i.Character.Humanoid
             local hrp = i.Character.HumanoidRootPart
             local head = i.Character.Head
+
             local Vector, onScreen = camera:WorldToViewportPoint(i.Character.HumanoidRootPart.Position)
+    
             local Size = (camera:WorldToViewportPoint(hrp.Position - Vector3new(0, 3, 0)).Y - camera:WorldToViewportPoint(hrp.Position + Vector3new(0, 2.6, 0)).Y) / 2
             local BoxSize = Vector2new(mathfloor(Size * 1.5), mathfloor(Size * 1.9))
             local BoxPos = Vector2new(mathfloor(Vector.X - Size * 1.5 / 2), mathfloor(Vector.Y - Size * 1.6 / 2))
+    
             local BottomOffset = BoxSize.Y + BoxPos.Y + 1
 
             if onScreen and esp.settings_chams.enabled then
@@ -221,7 +229,7 @@ esp_Loop = rs.RenderStepped:Connect(function()
                 if esp.settings.distance.enabled and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
                     v.distance.Position = Vector2new(BoxSize.X / 2 + BoxPos.X, BottomOffset)
                     v.distance.Outline = esp.settings.distance.outline
-                    v.distance.Text = "[" .. mathfloor((hrp.Position - plr.Character.HumanoidRootPart.Position).Magnitude) .. "]"
+                    v.distance.Text = "[" .. mathfloor((hrp.Position - plr.Character.HumanoidRootPart.Position).Magnitude) .. "m]"
                     v.distance.Color = esp.settings.distance.color
                     BottomOffset = BottomOffset + 15
 
