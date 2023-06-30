@@ -1,14 +1,11 @@
 local plrs = game["Players"]
 local rs = game["RunService"]
-
 local plr = plrs.LocalPlayer
 local mouse = plr:GetMouse()
 local camera = workspace.CurrentCamera
 local worldToViewportPoint = camera.worldToViewportPoint
 local emptyCFrame = CFrame.new();
 local pointToObjectSpace = emptyCFrame.PointToObjectSpace
-
--- thank you demo for the optim variables saved me so much time
 
 local Drawingnew = Drawing.new
 local Color3fromRGB = Color3.fromRGB
