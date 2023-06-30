@@ -17,7 +17,6 @@ local Vector2new = Vector2.new
 local mathfloor = math.floor
 local mathceil = math.ceil
 local cross = Vector3new().Cross;
-
 local esp = {
     players = {},
     objects = {},
@@ -307,8 +306,8 @@ esp_Loop = rs.RenderStepped:Connect(function()
                 if esp.settings.weapon.enabled then
                     v.weapon.Visible = true
                     v.weapon.Position = Vector2new(BoxSize.X + BoxPos.X + v.weapon.TextBounds.X / 2 + 3, BoxPos.Y - 3)
-                    v.weapon.Outline = esp.settings.name.outline
-                    v.weapon.Color = esp.settings.name.color
+                    v.weapon.Outline = esp.settings.weapon.outline
+                    v.weapon.Color = esp.settings.weapon.color
                     v.weapon.Font = esp.font
                     v.weapon.Size = esp.fontsize
                     v.weapon.Text = esp.GetEquippedTool(i)
