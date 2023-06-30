@@ -102,11 +102,7 @@ esp.TeamCheck = function(v)
 end
 
 esp.GetEquippedTool = function(v)
-    local Character =  v.Parent == game.Players and v.Character or v
-    if Character:FindFirstChildOfClass("Tool") then
-        return tostring(Character:FindFirstChildOfClass("Tool"))
-    end
-    return "None"
+    return (v.Character:FindFirstChildOfClass("Tool") and tostring(v.Character:FindFirstChildOfClass("Tool"))) or "None"
 end
 
 esp.NewPlayer = function(v)
